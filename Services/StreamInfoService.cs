@@ -13,7 +13,7 @@ public class StreamInfoService(IPubgReportApi pubgReportApi)
     /// <summary>
     /// Stores the last streamer interaction time for each PubgReportAccountId.
     /// </summary>
-    private readonly Dictionary<PubgReportAccountId, EventOccurrenceDateTime> _lastStreamTimes = new();
+    private readonly Dictionary<PubgReportAccountId, StreamerInteractionTimeUtc> _lastStreamTimes = new();
 
     /// <summary>
     /// Retrieves stream information for a given account ID and triggers an action whenever new stream info is available.
@@ -30,7 +30,7 @@ public class StreamInfoService(IPubgReportApi pubgReportApi)
             return;
         }
 
-        List<StreamInfo> infos = new();
+        List<StreamInfo> infos = [];
 
         // Extract stream info from response, keyed by match ID
         foreach ((Guid matchId, List<StreamResponse> list) in getStreamsResponse)
@@ -38,21 +38,19 @@ public class StreamInfoService(IPubgReportApi pubgReportApi)
             infos.AddRange(list
                 .Select(streamResponse =>
                 {
-                    StreamId sId = new(streamResponse.ID);
-                    EventOccurrenceDateTime t = new(streamResponse.TimeEvent);
-                    MatchId mId = new(matchId);
+                    StreamerInteractionTimeUtc t = new(streamResponse.TimeEvent);
 
-                    return StreamInfo.CreateInstance(sId, mId, t);
+                    return StreamInfo.CreateInstance(t);
                 })
             );
         }
 
-        infos = infos.OrderByDescending(si => si.Time.Value).ToList();
+        infos = infos.OrderByDescending(si => si.TimeUtc.Value).ToList();
 
-        EventOccurrenceDateTime lastStreamTime =
-            _lastStreamTimes.GetValueOrDefault(accountId, new EventOccurrenceDateTime(DateTime.MinValue));
+        StreamerInteractionTimeUtc lastStreamTimeUtc =
+            _lastStreamTimes.GetValueOrDefault(accountId, new StreamerInteractionTimeUtc(DateTime.MinValue));
 
-        List<StreamInfo> newStreamInfos = infos.Where(si => si.Time.Value > lastStreamTime.Value).ToList();
+        List<StreamInfo> newStreamInfos = infos.Where(si => si.TimeUtc.Value > lastStreamTimeUtc.Value).ToList();
 
         // No more recent matches in response
         if (!newStreamInfos.Any())
@@ -60,7 +58,7 @@ public class StreamInfoService(IPubgReportApi pubgReportApi)
             return;
         }
 
-        _lastStreamTimes[accountId] = newStreamInfos.First().Time;
+        _lastStreamTimes[accountId] = newStreamInfos.First().TimeUtc;
 
         onNewStreamInfo(newStreamInfos);
     }

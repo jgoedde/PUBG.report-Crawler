@@ -8,29 +8,17 @@ namespace PubgReportCrawler.Entities;
 public sealed class StreamInfo
 {
     /// <summary>
-    /// Gets the ID of the Stream (obtained from pubg.report API).
-    /// </summary>
-    public StreamId ID { get; }
-
-    /// <summary>
-    /// Gets the unique identifier for a match.
-    /// </summary>
-    public MatchId MatchId { get; }
-
-    /// <summary>
     /// Gets the occurrence date and time of a streamer interaction.
     /// </summary>
-    public EventOccurrenceDateTime Time { get; }
+    public StreamerInteractionTimeUtc TimeUtc { get; }
 
-    private StreamInfo(StreamId id, MatchId matchId, EventOccurrenceDateTime time)
+    private StreamInfo(StreamerInteractionTimeUtc timeUtc)
     {
-        ID = id;
-        MatchId = matchId;
-        Time = time;
+        TimeUtc = timeUtc;
     }
 
-    public static StreamInfo CreateInstance(StreamId id, MatchId matchId, EventOccurrenceDateTime time)
+    public static StreamInfo CreateInstance(StreamerInteractionTimeUtc timeUtc)
     {
-        return new StreamInfo(id, matchId, time);
+        return new StreamInfo(timeUtc);
     }
 }
