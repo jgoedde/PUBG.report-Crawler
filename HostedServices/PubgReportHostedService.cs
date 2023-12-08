@@ -66,6 +66,11 @@ public class PubgReportHostedService : IHostedService, IDisposable
 
     private async void OnNewStreamInfo(IReadOnlyList<StreamInfo> info)
     {
+        if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development")
+        {
+            return;
+        }
+
         IUser? socketUser = await _discordSocketClient.GetUserAsync(281128906243702784);
         if (socketUser is null)
         {
