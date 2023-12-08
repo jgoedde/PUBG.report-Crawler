@@ -33,7 +33,7 @@ public class StreamInfoService(IPubgReportApi pubgReportApi)
         List<StreamInfo> infos = [];
 
         // Extract stream info from response, keyed by match ID
-        foreach ((Guid matchId, List<StreamResponse> list) in getStreamsResponse)
+        foreach ((Guid _, List<StreamResponse> list) in getStreamsResponse)
         {
             infos.AddRange(list
                 .Select(streamResponse =>
