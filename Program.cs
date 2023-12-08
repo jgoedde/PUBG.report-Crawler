@@ -5,12 +5,15 @@ using PubgReportCrawler.Services;
 using Refit;
 
 // create hosting object and DI layer
-using var host = CreateHostBuilder(args).Build();
+using var host = CreateHostBuilder().Build();
 
 // create a service scope
 using var scope = host.Services.CreateScope();
 
-IHostBuilder CreateHostBuilder(string[] strings)
+await host.RunAsync();
+return;
+
+IHostBuilder CreateHostBuilder()
 {
     return Host.CreateDefaultBuilder()
         .ConfigureServices((_, services) =>
@@ -23,5 +26,3 @@ IHostBuilder CreateHostBuilder(string[] strings)
             services.AddHostedService<PubgReportHostedService>();
         });
 }
-
-await host.RunAsync();
