@@ -5,6 +5,13 @@ namespace PubgReportCrawler.ValueObjects;
 /// </summary>
 public record PubgReportAccountId(string Value)
 {
-    public static implicit operator string(PubgReportAccountId accountId) => accountId.Value;
-    public static implicit operator PubgReportAccountId(string value) => new(value);
+    public static implicit operator string(PubgReportAccountId accountId)
+    {
+        return accountId.Value;
+    }
+
+    public static implicit operator PubgReportAccountId(string value)
+    {
+        return new PubgReportAccountId(value);
+    }
 }

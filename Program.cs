@@ -1,14 +1,17 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+﻿using Discord;
+using Discord.WebSocket;
+
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+
 using PubgReportCrawler.HostedServices;
 using PubgReportCrawler.Services;
+
 using Refit;
 
-// create hosting object and DI layer
-using var host = CreateHostBuilder().Build();
+using IHost host = CreateHostBuilder().Build();
 
-// create a service scope
-using var scope = host.Services.CreateScope();
+using IServiceScope scope = host.Services.CreateScope();
 
 await host.RunAsync();
 return;
@@ -23,6 +26,13 @@ IHostBuilder CreateHostBuilder()
 
             services.AddSingleton<StreamInfoService>();
 
+            services
+                .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig
+                {
+                    LogLevel = LogSeverity.Info, GatewayIntents = GatewayIntents.DirectMessages
+                }));
+
             services.AddHostedService<PubgReportHostedService>();
+            services.AddHostedService<DiscordHostedService>();
         });
 }

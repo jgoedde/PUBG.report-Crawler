@@ -1,3 +1,4 @@
+using PubgReportCrawler.Dtos;
 using PubgReportCrawler.Entities;
 using PubgReportCrawler.ValueObjects;
 
@@ -22,21 +23,24 @@ public class StreamInfoService(IPubgReportApi pubgReportApi)
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task GetStreamInfo(PubgReportAccountId accountId, Action<IReadOnlyList<StreamInfo>> onNewStreamInfo)
     {
-        var getStreamsResponse = await pubgReportApi.GetStreams(accountId);
+        GetStreamsResponse getStreamsResponse = await pubgReportApi.GetStreams(accountId);
 
-        if (getStreamsResponse.Count == 0) return;
+        if (getStreamsResponse.Count == 0)
+        {
+            return;
+        }
 
-        var infos = new List<StreamInfo>();
+        List<StreamInfo> infos = new();
 
         // Extract stream info from response, keyed by match ID
-        foreach (var (matchId, list) in getStreamsResponse)
+        foreach ((Guid matchId, List<StreamResponse> list) in getStreamsResponse)
         {
             infos.AddRange(list
                 .Select(streamResponse =>
                 {
-                    var sId = new StreamId(streamResponse.ID);
-                    var t = new EventOccurrenceDateTime(streamResponse.TimeEvent);
-                    var mId = new MatchId(matchId);
+                    StreamId sId = new(streamResponse.ID);
+                    EventOccurrenceDateTime t = new(streamResponse.TimeEvent);
+                    MatchId mId = new(matchId);
 
                     return StreamInfo.CreateInstance(sId, mId, t);
                 })
@@ -45,13 +49,16 @@ public class StreamInfoService(IPubgReportApi pubgReportApi)
 
         infos = infos.OrderByDescending(si => si.Time.Value).ToList();
 
-        var lastStreamTime =
+        EventOccurrenceDateTime lastStreamTime =
             _lastStreamTimes.GetValueOrDefault(accountId, new EventOccurrenceDateTime(DateTime.MinValue));
 
-        var newStreamInfos = infos.Where(si => si.Time.Value > lastStreamTime.Value).ToList();
+        List<StreamInfo> newStreamInfos = infos.Where(si => si.Time.Value > lastStreamTime.Value).ToList();
 
         // No more recent matches in response
-        if (!newStreamInfos.Any()) return;
+        if (!newStreamInfos.Any())
+        {
+            return;
+        }
 
         _lastStreamTimes[accountId] = newStreamInfos.First().Time;
 
