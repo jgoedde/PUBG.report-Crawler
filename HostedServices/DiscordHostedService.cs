@@ -11,7 +11,7 @@ public class DiscordHostedService(DiscordSocketClient discordClient) : IHostedSe
     public async Task StartAsync(CancellationToken cancellationToken)
     {
         await discordClient.LoginAsync(TokenType.Bot,
-            "MTE2MDYxNzQyOTE1MjU2NzU1OA.GwEoGg.mqlhkz6EB0ORf-9fN7RjTvIKL8R3zMkkKfsmyE");
+            "MTE2MDYxNzQyOTE1MjU2NzU1OA.G0zET0.Gh59oX-eO07kmpgolOzKD7dR23S_qb83Iho3XU");
         await discordClient.StartAsync();
     }
 
