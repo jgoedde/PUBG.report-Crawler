@@ -14,8 +14,21 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0"/>
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0"/>
+        <PackageReference Include="Moq" Version="4.20.70"/>
         <PackageReference Include="Refit" Version="7.0.0"/>
         <PackageReference Include="Refit.HttpClientFactory" Version="7.0.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Compile Remove="PubgReportCrawlerTests\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <EmbeddedResource Remove="PubgReportCrawlerTests\**"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Remove="PubgReportCrawlerTests\**"/>
     </ItemGroup>
 
 </Project>

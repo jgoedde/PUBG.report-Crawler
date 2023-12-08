@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PubgReportCrawler", "PubgReportCrawler.csproj", "{9409C18B-9E0C-41E8-8AAD-DEEFCF822747}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PubgReportCrawlerTests", "PubgReportCrawlerTests\PubgReportCrawlerTests.csproj", "{B90DF886-1234-422C-BDA9-FC59DB4ACB95}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -12,5 +14,9 @@ Global
 		{9409C18B-9E0C-41E8-8AAD-DEEFCF822747}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9409C18B-9E0C-41E8-8AAD-DEEFCF822747}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9409C18B-9E0C-41E8-8AAD-DEEFCF822747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B90DF886-1234-422C-BDA9-FC59DB4ACB95}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B90DF886-1234-422C-BDA9-FC59DB4ACB95}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B90DF886-1234-422C-BDA9-FC59DB4ACB95}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B90DF886-1234-422C-BDA9-FC59DB4ACB95}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
