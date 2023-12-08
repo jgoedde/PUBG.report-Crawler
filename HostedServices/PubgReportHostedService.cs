@@ -1,10 +1,17 @@
+using Discord;
+using Discord.WebSocket;
+
 using Microsoft.Extensions.Hosting;
+
+using PubgReportCrawler.Entities;
 using PubgReportCrawler.Services;
 using PubgReportCrawler.ValueObjects;
 
 namespace PubgReportCrawler.HostedServices;
 
-public class PubgReportHostedService(StreamInfoService streamInfoService) : IHostedService, IDisposable
+public class PubgReportHostedService(
+    StreamInfoService streamInfoService,
+    DiscordSocketClient discordSocketClient) : IHostedService, IDisposable
 {
     private Timer? _timer;
 
@@ -13,19 +20,6 @@ public class PubgReportHostedService(StreamInfoService streamInfoService) : IHos
         _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(30));
 
         return Task.CompletedTask;
-    }
-
-    private async void DoWork(object? state)
-    {
-        await Console.Out.WriteLineAsync("Getting streams...");
-
-        await streamInfoService.GetStreamInfo(new PubgReportAccountId("account.1eb237a0e35b45d7a041b76681851604"),
-            info =>
-            {
-                // TODO: Send Discord Message
-            });
-        
-        await Console.Out.WriteLineAsync("Done getting streams. Waiting for next iteration...");
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
@@ -38,5 +32,23 @@ public class PubgReportHostedService(StreamInfoService streamInfoService) : IHos
     public void Dispose()
     {
         _timer?.Dispose();
+    }
+
+    private async void DoWork(object? state)
+    {
+        await streamInfoService.GetStreamInfo(new PubgReportAccountId("account.1eb237a0e35b45d7a041b76681851604"),
+            OnNewStreamInfo);
+    }
+
+    private async void OnNewStreamInfo(IReadOnlyList<StreamInfo> info)
+    {
+        IUser? socketUser = await discordSocketClient.GetUserAsync(281128906243702784);
+        if (socketUser is null)
+        {
+            return;
+        }
+
+        await socketUser.SendMessageAsync(
+            $"{info.Count} neue Streamer-Interaktionen: https://pubg.report/players/account.1eb237a0e35b45d7a041b76681851604");
     }
 }
