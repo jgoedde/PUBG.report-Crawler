@@ -15,16 +15,11 @@
 	<description>PubgReportCrawler</description>
 	<properties>
 		<java.version>22</java.version>
-		<spring-shell.version>3.2.4</spring-shell.version>
 	</properties>
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-quartz</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.shell</groupId>
-			<artifactId>spring-shell-starter</artifactId>
 		</dependency>
 
 		<dependency>
