@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.ApplicationArguments;
 import org.springframework.stereotype.Component;
 
 import java.net.URI;
@@ -31,20 +32,21 @@ public class PubgReportApiJob implements Job {
     private final String pubgReportApiUrl;
     private final ObjectMapper objectMapper;
     private final Pipeline pipeline;
+    private final ApplicationArguments args;
 
     @Autowired
-    public PubgReportApiJob(AppConfig properties, ObjectMapper objectMapper, @Autowired Pipeline pipeline) {
+    public PubgReportApiJob(AppConfig properties, ObjectMapper objectMapper, @Autowired Pipeline pipeline, ApplicationArguments args) {
         this.pubgReportApiUrl = properties.getPubgReportApiUrl();
         this.objectMapper = objectMapper;
         this.pipeline = pipeline;
+        this.args = args;
     }
 
     @Override
     public void execute(JobExecutionContext jobExecutionContext) {
         HttpClient client = HttpClient.newHttpClient();
 
-        // TODO: Accept a list of ids (or better: nicknames) from args
-        KraftonAccountId kraftonAccountId = new KraftonAccountId("account.1eb237a0e35b45d7a041b76681851604"); // me
+        KraftonAccountId kraftonAccountId = new KraftonAccountId(args.getOptionValues("account").getFirst());
 
         HttpRequest request = HttpRequest.newBuilder()
                 .GET()
