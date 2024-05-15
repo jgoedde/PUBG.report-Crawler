@@ -9,4 +9,5 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @RequiredArgsConstructor
 public final class AppConfig {
     private final String pubgReportApiUrl;
+    private final String discordToken;
 }
