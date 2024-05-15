@@ -59,8 +59,7 @@ public class PubgReportApiJob implements Job {
             GetStreamsResponse getStreamsResponse = objectMapper.readValue(resStr, GetStreamsResponse.class);
 
             List<StreamerInteractionTimestamp> streamerInteractionTimes = getStreamsResponse
-                    .values()
-                    .stream()
+                    .values().stream()
                     .flatMap(List::stream)
                     .map(it -> new StreamerInteractionTimestamp(it.timeEvent()))
                     .toList();
