@@ -1,7 +1,6 @@
 package de.jgoedde.pubgreportcrawler;
 
 import de.jgoedde.pubgreportcrawler.config.AppConfig;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.boot.SpringApplication;
@@ -16,7 +15,7 @@ public class PubgReportCrawlerApplication implements ApplicationRunner {
     }
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         if (!args.containsOption("account")) {
             throw new IllegalArgumentException("You must provide at least one account to watch for");
         }
