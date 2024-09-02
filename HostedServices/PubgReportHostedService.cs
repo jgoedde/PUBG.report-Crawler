@@ -33,7 +33,7 @@ public class PubgReportHostedService : IHostedService, IDisposable
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(EveryXMinutes));
+        _timer = new Timer(DoWorkWrapper, null, TimeSpan.Zero, TimeSpan.FromMinutes(EveryXMinutes));
 
         return Task.CompletedTask;
     }
@@ -48,6 +48,14 @@ public class PubgReportHostedService : IHostedService, IDisposable
     public void Dispose()
     {
         _timer?.Dispose();
+    }
+
+    private async void DoWorkWrapper(object? state) {
+        try {
+            DoWork(state);
+        } catch(Exception e) {
+            Console.WriteLine(e);
+        }
     }
 
     private async void DoWork(object? state)
