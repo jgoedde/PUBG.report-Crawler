@@ -14,7 +14,7 @@ public class DiscordHostedService(DiscordSocketClient discordClient) : IHostedSe
             "MTE2MDYxNzQyOTE1MjU2NzU1OA.GnYWK7.cm-GzzfoMC4iPF-uxde7rYKKP3PWzOc2TQB8TA");
         await discordClient.StartAsync();
 
-        IUser? socketUser = await _discordSocketClient.GetUserAsync(281128906243702784);
+        IUser? socketUser = await discordClient.GetUserAsync(281128906243702784);
         if (socketUser is null)
         {
             return;
@@ -25,7 +25,7 @@ public class DiscordHostedService(DiscordSocketClient discordClient) : IHostedSe
 
     public async Task StopAsync(CancellationToken cancellationToken)
     {
-        IUser? socketUser = await _discordSocketClient.GetUserAsync(281128906243702784);
+        IUser? socketUser = await discordClient.GetUserAsync(281128906243702784);
         if (socketUser is not null)
         {
             await socketUser.SendMessageAsync("[PUBG.report Crawler] [Status] Der Bot stoppt nun.");
