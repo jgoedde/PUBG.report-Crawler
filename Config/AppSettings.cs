@@ -15,15 +15,3 @@ public sealed class AppSettingsOptions
     public ulong DiscordUserId { get; init; }
 }
 
-public sealed class AppSettingsValidator : IValidateOptions<AppSettingsOptions>
-{
-    public ValidateOptionsResult Validate(string? name, AppSettingsOptions options)
-    {
-        if (string.IsNullOrWhiteSpace(options.DiscordBotToken))
-        {
-            return ValidateOptionsResult.Fail("foobar");
-        }
-
-        return ValidateOptionsResult.Success;
-    }
-}
