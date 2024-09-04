@@ -8,11 +8,12 @@ Fetches the pubg.report API for new streams of one specific player ID and stores
 
 # How to run
 
+This app is containerized using Docker.
+
 ℹ️ Make sure Docker is installed.
+ℹ️ Make sure git is installed.
 
 ## Setup by cloning with git:
-
-ℹ️ Make sure git is installed.
 
 ```
 git clone https://github.com/jgoedde/PUBG.report-Crawler.git \
@@ -21,9 +22,9 @@ cd PUBG.report-Crawler
 
 Copy the `.env.example` file and adjust the variables.
 
-`DiscordAccountId` - an 18 digits long number. it is used as the account that gets notified on new streams via direct message.
-`KraftonAccountId` - the ID of the player whose streamer interactions should be tracked. In other words - *your* krafton account ID.
-`DiscordBotToken` - The token of the discord bot that sends you the messages. You have to share a server with the bot.
+- `DiscordAccountId` - an 18 digits long number. It is used as the account that gets notified on new streams via direct message.
+- `KraftonAccountId` - the ID of the player whose streamer interactions should be tracked. In other words - *your* krafton account ID.
+- `DiscordBotToken` - the token of the discord bot that sends you the messages. You have to share a server with the bot.
 
 Save the file under the name `.env` in the root directory of the cloned project.
 
