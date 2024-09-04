@@ -1,0 +1,10 @@
+services:
+  pubg-report:
+    image: mcr.microsoft.com/dotnet/runtime:8.0
+    working_dir: /app
+    volumes:
+      - ./:/app
+    env_file:
+      - .env
+    command: ["dotnet", "PubgReportCrawler.dll"]
+

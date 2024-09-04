@@ -1,6 +1,6 @@
-using PubgReportCrawler.ValueObjects;
-
 namespace PubgReportCrawler.Entities;
+
+using PubgReportCrawler.ValueObjects;
 
 /// <summary>
 /// Represents the information about a stream.
@@ -12,13 +12,7 @@ public sealed class StreamInfo
     /// </summary>
     public StreamerInteractionTimeUtc TimeUtc { get; }
 
-    private StreamInfo(StreamerInteractionTimeUtc timeUtc)
-    {
-        TimeUtc = timeUtc;
-    }
+    private StreamInfo(StreamerInteractionTimeUtc timeUtc) => this.TimeUtc = timeUtc;
 
-    public static StreamInfo CreateInstance(StreamerInteractionTimeUtc timeUtc)
-    {
-        return new StreamInfo(timeUtc);
-    }
+    public static StreamInfo CreateInstance(StreamerInteractionTimeUtc timeUtc) => new(timeUtc);
 }

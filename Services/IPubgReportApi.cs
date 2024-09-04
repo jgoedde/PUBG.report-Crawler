@@ -1,9 +1,9 @@
+namespace PubgReportCrawler.Services;
+
 using PubgReportCrawler.Dtos;
 using PubgReportCrawler.ValueObjects;
 
 using Refit;
-
-namespace PubgReportCrawler.Services;
 
 /// <summary>
 /// Represents the interface for interacting with the PUBG Report API.
