@@ -1,10 +1,14 @@
+version: '3.8'
+
 services:
-  pubg-report:
-    image: mcr.microsoft.com/dotnet/runtime:8.0
-    working_dir: /app
-    volumes:
-      - ./:/app
+  pubg_report:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        BUILD_CONFIGURATION: ${BUILD_CONFIGURATION:-Release}
     env_file:
       - .env
-    command: ["dotnet", "PubgReportCrawler.dll"]
-
+    volumes:
+      - ./logs:/app/logs # Example of how to map a local directory to the container
+    entrypoint: ["dotnet", "PubgReportCrawler.dll"]
