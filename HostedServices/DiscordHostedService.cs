@@ -8,9 +8,9 @@ using Microsoft.Extensions.Options;
 using PubgReportCrawler.Config;
 
 // ReSharper disable once SuggestBaseTypeForParameterInConstructor
-public class DiscordHostedService(DiscordSocketClient discordClient, IOptions<AppSettings> appSettings) : IHostedService
+public class DiscordHostedService(DiscordSocketClient discordClient, IOptions<AppSettingsOptions> appSettings) : IHostedService
 {
-    private AppSettings AppSettings => appSettings.Value;
+    private AppSettingsOptions AppSettings => appSettings.Value;
 
     public async Task StartAsync(CancellationToken cancellationToken)
     {

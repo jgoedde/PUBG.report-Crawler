@@ -18,10 +18,10 @@ public sealed class PubgReportHostedService : IHostedService, IDisposable
 
     private readonly StreamInfoService _streamInfoService;
     private readonly DiscordSocketClient _discordSocketClient;
-    private readonly AppSettings _appSettings;
+    private readonly AppSettingsOptions _appSettings;
 
     public PubgReportHostedService(StreamInfoService streamInfoService,
-        DiscordSocketClient discordSocketClient, IOptions<AppSettings> appSettings)
+        DiscordSocketClient discordSocketClient, IOptions<AppSettingsOptions> appSettings)
     {
         this._streamInfoService = streamInfoService;
         this._discordSocketClient = discordSocketClient;

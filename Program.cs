@@ -2,6 +2,7 @@ using Discord;
 using Discord.WebSocket;
 
 using DotNetEnv;
+using DotNetEnv.Configuration;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,11 +22,12 @@ await host.RunAsync();
 return;
 
 static IHostBuilder CreateHostBuilder() => Host.CreateDefaultBuilder()
-        .ConfigureHostConfiguration(builder => builder.AddEnvironmentVariables())
+        .ConfigureHostConfiguration(builder => builder.AddDotNetEnv())
         .ConfigureServices((hostBuilderContext, services) =>
         {
-            services.AddOptions<AppSettings>()
+            services.AddOptions<AppSettingsOptions>()
                 .Bind(hostBuilderContext.Configuration)
+                .ValidateDataAnnotations()
                 .ValidateOnStart();
 
             services.AddRefitClient<IPubgReportApi>()
