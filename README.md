@@ -22,9 +22,10 @@ cd PUBG.report-Crawler
 
 Copy the `.env.example` file and adjust the variables.
 
-- `DiscordAccountId` - an 18 digits long number. It is used as the account that gets notified on new streams via direct message.
-- `KraftonAccountId` - the ID of the player whose streamer interactions should be tracked. In other words - *your* krafton account ID.
-- `DiscordBotToken` - the token of the discord bot that sends you the messages. You have to share a server with the bot.
+- `DISCORD_ACCOUNT_ID` - an 18 digits long number. It is used as the account that gets notified on new streams via direct message.
+- `KRAFTON_ACCOUNT_ID` - the ID of the player whose streamer interactions should be tracked. In other words - *your* krafton account ID.
+- `DISCORD_BOT_TOKEN` - the token of the discord bot that sends you the messages. You have to share a server with the bot.
+- `PUBG_NICK` - your PUBG nickname. It is used to determine if you *have killed* a streamer or whether you *were killed* by a streamer.
 
 Save the file under the name `.env` in the root directory of the cloned project.
 
