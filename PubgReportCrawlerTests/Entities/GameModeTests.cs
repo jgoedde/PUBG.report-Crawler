@@ -15,9 +15,12 @@ public sealed class GameModeTests
     {
         OneOf<GameMode, UnknownGameMode> createGameModeResult = GameMode.CreateWithReadableName(input);
 
-        Assert.That(createGameModeResult.IsT0, Is.True);
-        Assert.That(createGameModeResult.IsT1, Is.False);
-        Assert.That(createGameModeResult.AsT0.Value, Is.EqualTo(expectedOutput));
+        Assert.Multiple(() =>
+        {
+            Assert.That(createGameModeResult.IsT0, Is.True);
+            Assert.That(createGameModeResult.IsT1, Is.False);
+            Assert.That(createGameModeResult.AsT0.Value, Is.EqualTo(expectedOutput));
+        });
     }
 
     [Test]
@@ -27,8 +30,11 @@ public sealed class GameModeTests
 
         OneOf<GameMode, UnknownGameMode> createGameModeResult = GameMode.CreateWithReadableName(input);
 
-        Assert.That(createGameModeResult.IsT0, Is.False);
-        Assert.That(createGameModeResult.IsT1, Is.True);
-        Assert.That(createGameModeResult.AsT1.CodeName, Is.EqualTo(input));
+        Assert.Multiple(() =>
+        {
+            Assert.That(createGameModeResult.IsT0, Is.False);
+            Assert.That(createGameModeResult.IsT1, Is.True);
+            Assert.That(createGameModeResult.AsT1.CodeName, Is.EqualTo(input));
+        });
     }
 }
