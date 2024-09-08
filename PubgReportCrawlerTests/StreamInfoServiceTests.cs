@@ -1,3 +1,5 @@
+using PubgReportCrawler.Models;
+
 namespace PubgReportCrawlerTests;
 
 using Microsoft.Extensions.Logging;
@@ -5,9 +7,7 @@ using Microsoft.Extensions.Logging;
 using Moq;
 
 using PubgReportCrawler.Dtos;
-using PubgReportCrawler.Entities;
 using PubgReportCrawler.Services;
-using PubgReportCrawler.ValueObjects;
 
 public class StreamInfoServiceTests
 {
@@ -77,7 +77,7 @@ public class StreamInfoServiceTests
         await _streamInfoService.GetStreamInfo(_accountId, Action);
 
         Assert.That(streamInfos, Has.Count.EqualTo(1));
-        Assert.That(streamInfos[0].TimeUtc.Value, Is.EqualTo(streamResponse.TimeEvent));
+        Assert.That(streamInfos[0].ShowdownTimeUtc.Value, Is.EqualTo(streamResponse.TimeEvent));
 
         return;
 
@@ -98,7 +98,7 @@ public class StreamInfoServiceTests
         await _streamInfoService.GetStreamInfo(_accountId, Action);
 
         Assert.That(streamInfos, Has.Count.EqualTo(1));
-        Assert.That(streamInfos[0].TimeUtc.Value, Is.EqualTo(streamResponse.TimeEvent));
+        Assert.That(streamInfos[0].ShowdownTimeUtc.Value, Is.EqualTo(streamResponse.TimeEvent));
 
         return;
 

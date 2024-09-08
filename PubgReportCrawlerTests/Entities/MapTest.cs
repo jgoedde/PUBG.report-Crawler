@@ -1,8 +1,7 @@
 using OneOf;
+using PubgReportCrawler.Models;
 
 namespace PubgReportCrawlerTests.Entities;
-
-using PubgReportCrawler.Entities;
 
 [TestFixture]
 [TestOf(typeof(Map))]
@@ -13,7 +12,7 @@ public sealed class MapTest
     {
         const string code = "unknown-map";
 
-        OneOf<Map,UnknownMap> createMapResult = Map.CreateWithReadableName(code);
+        OneOf<Map,UnknownMap> createMapResult = Map.MapFactory.CreateWithReadableName(code);
 
         Assert.Multiple(() =>
         {
@@ -28,7 +27,7 @@ public sealed class MapTest
         const string code = "Kiki_Main";
         const string name = "Deston";
 
-        OneOf<Map,UnknownMap> createMapResult = Map.CreateWithReadableName(code);
+        OneOf<Map,UnknownMap> createMapResult = Map.MapFactory.CreateWithReadableName(code);
 
         Assert.Multiple(() =>
         {
@@ -43,12 +42,12 @@ public sealed class MapTest
         const string code = "Kiki_Main";
         const string name = "Deston";
 
-        OneOf<Map,UnknownMap> createMapResult = Map.CreateWithReadableName(code);
+        OneOf<Map,UnknownMap> createMapResult = Map.MapFactory.CreateWithReadableName(code);
 
         Assert.Multiple(() =>
         {
             Assert.That(createMapResult.IsT0, Is.True);
-            Assert.That(createMapResult.AsT0.ToString(), Is.EqualTo(name));
+            Assert.That(createMapResult.AsT0.ToString(), Is.EquivalentTo(name));
         });
     }
 }

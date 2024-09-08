@@ -25,7 +25,7 @@ static IHostBuilder CreateHostBuilder() => Host.CreateDefaultBuilder()
         .ConfigureHostConfiguration(builder => builder.AddDotNetEnv())
         .ConfigureServices((hostBuilderContext, services) =>
         {
-            services.AddOptions<AppSettingsOptions>()
+            services.AddOptions<AppOptions>()
                 .Bind(hostBuilderContext.Configuration)
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
@@ -34,6 +34,7 @@ static IHostBuilder CreateHostBuilder() => Host.CreateDefaultBuilder()
                 .ConfigureHttpClient(c => c.BaseAddress = new Uri("https://api.pubg.report/v1"));
 
             services.AddSingleton<StreamInfoService>();
+            services.AddScoped<ShowdownReportProvider>();
 
             services
                 .AddSingleton(new DiscordSocketClient(new DiscordSocketConfig

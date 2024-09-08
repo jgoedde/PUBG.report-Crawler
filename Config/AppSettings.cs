@@ -6,7 +6,7 @@ namespace PubgReportCrawler.Config;
 
 using System.ComponentModel.DataAnnotations;
 
-public sealed class AppSettingsOptions
+public sealed class AppOptions
 {
     [ConfigurationKeyName("DISCORD_BOT_TOKEN")]
     [Required(AllowEmptyStrings = false)]

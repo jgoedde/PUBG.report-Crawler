@@ -1,8 +1,8 @@
+using PubgReportCrawler.Models;
+
 namespace PubgReportCrawler.Services;
 
 using PubgReportCrawler.Dtos;
-using PubgReportCrawler.ValueObjects;
-
 using Refit;
 
 /// <summary>

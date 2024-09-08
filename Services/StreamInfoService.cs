@@ -1,7 +1,6 @@
 using Microsoft.Extensions.Logging;
 using PubgReportCrawler.Dtos;
-using PubgReportCrawler.Entities;
-using PubgReportCrawler.ValueObjects;
+using PubgReportCrawler.Models;
 
 namespace PubgReportCrawler.Services;
 
@@ -14,7 +13,7 @@ public sealed class StreamInfoService(IPubgReportApi pubgReportApi, ILogger<Stre
     /// <summary>
     /// Stores the last streamer interaction time for each PubgReportAccountId.
     /// </summary>
-    private readonly Dictionary<PubgReportAccountId, StreamerInteractionTimeUtc> _lastStreamTimes = [];
+    private readonly Dictionary<PubgReportAccountId, ShowdownTimeUtc> _lastStreamTimes = [];
 
     /// <summary>
     /// Retrieves stream information for a given account ID and triggers an action whenever new stream info is available.
@@ -35,13 +34,13 @@ public sealed class StreamInfoService(IPubgReportApi pubgReportApi, ILogger<Stre
             .SelectMany(kvp => kvp.Value)
             .Select(CreateStreamerShowdown)
             .OfType<StreamerShowdown>()
-            .OrderByDescending(si => si.TimeUtc.Value)
+            .OrderByDescending(si => si.ShowdownTimeUtc.Value)
             .ToList();
 
-        var lastStreamTimeUtc = _lastStreamTimes.GetValueOrDefault(accountId, new StreamerInteractionTimeUtc(DateTime.MinValue));
+        var lastStreamTimeUtc = _lastStreamTimes.GetValueOrDefault(accountId, new ShowdownTimeUtc(DateTime.MinValue));
 
         var newStreamInfos = validStreamInfos
-            .Where(si => si.TimeUtc.Value > lastStreamTimeUtc.Value)
+            .Where(si => si.ShowdownTimeUtc.Value > lastStreamTimeUtc.Value)
             .ToList();
 
         if (newStreamInfos.Count == 0)
@@ -49,7 +48,7 @@ public sealed class StreamInfoService(IPubgReportApi pubgReportApi, ILogger<Stre
             return;
         }
 
-        _lastStreamTimes[accountId] = newStreamInfos.First().TimeUtc;
+        _lastStreamTimes[accountId] = newStreamInfos.First().ShowdownTimeUtc;
         onNewStreamInfo(newStreamInfos);
     }
 
@@ -58,7 +57,7 @@ public sealed class StreamInfoService(IPubgReportApi pubgReportApi, ILogger<Stre
     /// </summary>
     private StreamerShowdown? CreateStreamerShowdown(StreamResponse streamResponse)
     {
-        var createMapResult = Map.CreateWithReadableName(streamResponse.Map);
+        var createMapResult = Map.MapFactory.CreateWithReadableName(streamResponse.Map);
         var createGameModeResult = GameMode.CreateWithReadableName(streamResponse.Mode);
 
         if (createMapResult.TryPickT1(out var unknownMap, out _))
@@ -73,8 +72,8 @@ public sealed class StreamInfoService(IPubgReportApi pubgReportApi, ILogger<Stre
             return null;
         }
 
-        var killer = KillerName.From(streamResponse.Killer);
-        var victim = VictimName.From(streamResponse.Victim);
+        var killer = Killer.From(streamResponse.Killer);
+        var victim = Victim.From(streamResponse.Victim);
         var fightDetails = FightDetails.Create(killer, victim);
 
         if (fightDetails.TryPickT1(out var error, out _))
@@ -84,8 +83,8 @@ public sealed class StreamInfoService(IPubgReportApi pubgReportApi, ILogger<Stre
         }
 
         var matchDetails = new MatchDetails(createMapResult.AsT0, createGameModeResult.AsT0);
-        var dateTime = new StreamerInteractionTimeUtc(streamResponse.TimeEvent);
+        var dateTime = new ShowdownTimeUtc(streamResponse.TimeEvent);
 
-        return StreamerShowdown.Create(dateTime, fightDetails.AsT0, matchDetails);
+        return new StreamerShowdown(dateTime, fightDetails.AsT0, matchDetails);
     }
 }

@@ -1,5 +1,5 @@
 using OneOf;
-using PubgReportCrawler.ValueObjects;
+using PubgReportCrawler.Models;
 
 namespace PubgReportCrawlerTests.Entities;
 

@@ -3,88 +3,53 @@ using Discord.WebSocket;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using PubgReportCrawler.Config;
-using PubgReportCrawler.Entities;
+using PubgReportCrawler.Models;
 using PubgReportCrawler.Services;
-using PubgReportCrawler.ValueObjects;
 
 namespace PubgReportCrawler.HostedServices;
 
-public sealed class PubgReportHostedService : IHostedService, IDisposable
+public sealed class PubgReportHostedService(
+    StreamInfoService streamInfoService,
+    DiscordSocketClient discordSocketClient,
+    IOptions<AppOptions> appOptions,
+    ShowdownReportProvider showdownReportProvider)
+    : BackgroundService
 {
-    private Timer? _timer;
-    private const int EveryXMinutes = 30;
-    private bool _isReady;
+    private readonly TimeSpan _period = TimeSpan.FromSeconds(30);
 
-    private readonly StreamInfoService _streamInfoService;
-    private readonly DiscordSocketClient _discordSocketClient;
-    private readonly AppSettingsOptions _appSettings;
+    private readonly AppOptions _appOptions = appOptions.Value;
 
-    public PubgReportHostedService(StreamInfoService streamInfoService,
-        DiscordSocketClient discordSocketClient, IOptions<AppSettingsOptions> appSettings)
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        _streamInfoService = streamInfoService;
-        _discordSocketClient = discordSocketClient;
-        _appSettings = appSettings.Value;
+        using PeriodicTimer timer = new(_period);
 
-        discordSocketClient.Ready += () =>
+        while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
         {
-            _isReady = true;
-            return Task.CompletedTask;
-        };
-    }
-
-    public Task StartAsync(CancellationToken cancellationToken)
-    {
-        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(EveryXMinutes));
-
-        return Task.CompletedTask;
-    }
-
-    public Task StopAsync(CancellationToken cancellationToken)
-    {
-        _timer?.Change(Timeout.Infinite, 0);
-
-        return Task.CompletedTask;
-    }
-
-    public void Dispose() => _timer?.Dispose();
-
-    private async void DoWork(object? state)
-    {
-        if (!_isReady)
-        {
-            _timer?.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(10));
-            return;
+            await streamInfoService.GetStreamInfo(new PubgReportAccountId(_appOptions.KraftonAccountId),
+                OnNewStreamInfo);
         }
-
-        _timer?.Change(TimeSpan.FromMinutes(EveryXMinutes), TimeSpan.FromMinutes(EveryXMinutes));
-
-        await _streamInfoService.GetStreamInfo(new PubgReportAccountId(_appSettings.KraftonAccountId),
-            OnNewStreamInfo);
     }
 
     private async void OnNewStreamInfo(IReadOnlyList<StreamerShowdown> infos)
     {
-        if (true)
-        {
-            return;
-        }
-
-        var socketUser = await _discordSocketClient.GetUserAsync(_appSettings.DiscordUserId);
+        var socketUser = await discordSocketClient.GetUserAsync(_appOptions.DiscordUserId);
         if (socketUser is null)
         {
             return;
         }
 
+        // We do not want to spam the user with each showdown report per message.
+        // This is happening when the app is restarted and so the cache containing the past streamer showdowns is cleared.
+        if (infos.Count >= 3)
+        {
+            await socketUser.SendMessageAsync(showdownReportProvider.GetManyMoreShowdownsMessage());
+            return;
+        }
+
         var sendMessageTaskList = new List<Task>();
 
-        sendMessageTaskList.AddRange(infos.Select(streamInfo =>
-        {
-            GameMode gameMode = streamInfo.MatchDetails.GameMode;
-            Map map = streamInfo.MatchDetails.Map;
-            return socketUser.SendMessageAsync(string.Format(
-                $"Du bist im {gameMode} einem Streamer begegnet auf {map}. Mehr Infos: https://pubg.report/players/{_appSettings.KraftonAccountId}"));
-        }));
+        sendMessageTaskList.AddRange(infos.Select(showdown
+            => socketUser.SendMessageAsync(showdownReportProvider.GetMessage(showdown))));
 
         await Task.WhenAll(sendMessageTaskList);
     }
