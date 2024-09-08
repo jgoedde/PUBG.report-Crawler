@@ -15,7 +15,7 @@ public sealed class PubgReportHostedService(
     ShowdownReportProvider showdownReportProvider)
     : BackgroundService
 {
-    private readonly TimeSpan _period = TimeSpan.FromSeconds(30);
+    private readonly TimeSpan _period = TimeSpan.FromMinutes(30);
 
     private readonly AppOptions _appOptions = appOptions.Value;
 
