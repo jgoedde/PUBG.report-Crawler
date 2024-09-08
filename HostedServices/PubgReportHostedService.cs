@@ -1,6 +1,7 @@
 using Discord;
 using Discord.WebSocket;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using PubgReportCrawler.Config;
 using PubgReportCrawler.Models;
@@ -12,7 +13,8 @@ public sealed class PubgReportHostedService(
     StreamInfoService streamInfoService,
     DiscordSocketClient discordSocketClient,
     IOptions<AppOptions> appOptions,
-    ShowdownReportProvider showdownReportProvider)
+    ShowdownReportProvider showdownReportProvider,
+    ILogger<PubgReportHostedService> logger)
     : BackgroundService
 {
     private readonly TimeSpan _period = TimeSpan.FromMinutes(30);
@@ -25,6 +27,8 @@ public sealed class PubgReportHostedService(
 
         while (!stoppingToken.IsCancellationRequested && await timer.WaitForNextTickAsync(stoppingToken))
         {
+            logger.LogInformation("Fetching report data...");
+            
             await streamInfoService.GetStreamInfo(new PubgReportAccountId(_appOptions.KraftonAccountId),
                 OnNewStreamInfo);
         }
@@ -51,6 +55,8 @@ public sealed class PubgReportHostedService(
         sendMessageTaskList.AddRange(infos.Select(showdown
             => socketUser.SendMessageAsync(showdownReportProvider.GetMessage(showdown))));
 
+        logger.LogInformation($"Sending {sendMessageTaskList.Count} Discord private messages.");
+        
         await Task.WhenAll(sendMessageTaskList);
     }
 }
