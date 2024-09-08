@@ -1,17 +1,26 @@
+using Microsoft.Extensions.Configuration;
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+// ReSharper disable AutoPropertyCanBeMadeGetOnly.Global
+
 namespace PubgReportCrawler.Config;
 
 using System.ComponentModel.DataAnnotations;
 
-public sealed record AppSettingsOptions(
+public sealed class AppSettingsOptions
+{
+    [ConfigurationKeyName("DISCORD_BOT_TOKEN")]
     [Required(AllowEmptyStrings = false)]
-    string DiscordBotToken,
+    public string DiscordBotToken { get; init; } = null!;
 
+    [ConfigurationKeyName("KRAFTON_ACCOUNT_ID")]
     [Required(AllowEmptyStrings = false)]
-    string KraftonAccountId,
+    public string KraftonAccountId { get; init; } = null!;
 
+    [ConfigurationKeyName("DISCORD_USER_ID")]
     [Required]
-    ulong DiscordUserId,
+    public ulong DiscordUserId { get; init; }
 
+    [ConfigurationKeyName("PUBG_NICK")]
     [Required(AllowEmptyStrings = false)]
-    string PubgNick
-);
+    public string PubgNick { get; init; } = null!;
+}
