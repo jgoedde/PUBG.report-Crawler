@@ -1,14 +1,13 @@
-namespace PubgReportCrawler.HostedServices;
-
 using Discord;
 using Discord.WebSocket;
-
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using PubgReportCrawler.Config;
 using PubgReportCrawler.Entities;
 using PubgReportCrawler.Services;
 using PubgReportCrawler.ValueObjects;
+
+namespace PubgReportCrawler.HostedServices;
 
 public sealed class PubgReportHostedService : IHostedService, IDisposable
 {
@@ -23,64 +22,70 @@ public sealed class PubgReportHostedService : IHostedService, IDisposable
     public PubgReportHostedService(StreamInfoService streamInfoService,
         DiscordSocketClient discordSocketClient, IOptions<AppSettingsOptions> appSettings)
     {
-        this._streamInfoService = streamInfoService;
-        this._discordSocketClient = discordSocketClient;
-        this._appSettings = appSettings.Value;
+        _streamInfoService = streamInfoService;
+        _discordSocketClient = discordSocketClient;
+        _appSettings = appSettings.Value;
 
         discordSocketClient.Ready += () =>
         {
-            this._isReady = true;
+            _isReady = true;
             return Task.CompletedTask;
         };
     }
 
     public Task StartAsync(CancellationToken cancellationToken)
     {
-        this._timer = new Timer(this.DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(EveryXMinutes));
+        _timer = new Timer(DoWork, null, TimeSpan.Zero, TimeSpan.FromMinutes(EveryXMinutes));
 
         return Task.CompletedTask;
     }
 
     public Task StopAsync(CancellationToken cancellationToken)
     {
-        this._timer?.Change(Timeout.Infinite, 0);
+        _timer?.Change(Timeout.Infinite, 0);
 
         return Task.CompletedTask;
     }
 
-    public void Dispose() => this._timer?.Dispose();
+    public void Dispose() => _timer?.Dispose();
 
     private async void DoWork(object? state)
     {
-        if (!this._isReady)
+        if (!_isReady)
         {
-            this._timer?.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(10));
+            _timer?.Change(TimeSpan.FromSeconds(2), TimeSpan.FromSeconds(10));
             return;
         }
 
-        this._timer?.Change(TimeSpan.FromMinutes(EveryXMinutes), TimeSpan.FromMinutes(EveryXMinutes));
+        _timer?.Change(TimeSpan.FromMinutes(EveryXMinutes), TimeSpan.FromMinutes(EveryXMinutes));
 
-        await this._streamInfoService.GetStreamInfo(new PubgReportAccountId(_appSettings.KraftonAccountId),
-            this.OnNewStreamInfo);
+        await _streamInfoService.GetStreamInfo(new PubgReportAccountId(_appSettings.KraftonAccountId),
+            OnNewStreamInfo);
     }
 
-    private async void OnNewStreamInfo(IReadOnlyList<StreamInfo> info)
+    private async void OnNewStreamInfo(IReadOnlyList<StreamerShowdown> infos)
     {
-        if (IsDevelopment())
+        if (true)
         {
             return;
         }
 
-        var socketUser = await this._discordSocketClient.GetUserAsync(_appSettings.DiscordUserId);
+        var socketUser = await _discordSocketClient.GetUserAsync(_appSettings.DiscordUserId);
         if (socketUser is null)
         {
             return;
         }
 
-        // TODO: Include streamer's name on twitch. Possibly the viewer count?
-        await socketUser.SendMessageAsync(
-            $"{info.Count} neue Streamer-Interaktionen: https://pubg.report/players/{_appSettings.KraftonAccountId}");
-    }
+        var sendMessageTaskList = new List<Task>();
 
-    private static bool IsDevelopment() => Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Development";
+        sendMessageTaskList.AddRange(infos.Select(streamInfo =>
+        {
+            GameMode gameMode = streamInfo.MatchDetails.GameMode;
+            Map map = streamInfo.MatchDetails.Map;
+            return socketUser.SendMessageAsync(string.Format(
+                $"Du bist im {gameMode} einem Streamer begegnet auf {map}. Mehr Infos: https://pubg.report/players/{_appSettings.KraftonAccountId}"));
+        }));
+
+        await Task.WhenAll(sendMessageTaskList);
+    }
 }

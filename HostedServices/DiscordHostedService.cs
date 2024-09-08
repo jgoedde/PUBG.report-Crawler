@@ -1,11 +1,11 @@
-namespace PubgReportCrawler.HostedServices;
-
 using Discord;
 using Discord.WebSocket;
-
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
 using PubgReportCrawler.Config;
+
+namespace PubgReportCrawler.HostedServices;
 
 // ReSharper disable once SuggestBaseTypeForParameterInConstructor
 public class DiscordHostedService(DiscordSocketClient discordClient, IOptions<AppSettingsOptions> appSettings) : IHostedService
@@ -38,6 +38,7 @@ public class DiscordHostedService(DiscordSocketClient discordClient, IOptions<Ap
             return;
         }
 
-        await socketUser.SendMessageAsync(message);
+        Console.WriteLine(JsonConvert.SerializeObject(socketUser));
+        // await socketUser.SendMessageAsync(message);
     }
 }

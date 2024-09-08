@@ -9,11 +9,6 @@
         <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
 
-    <PropertyGroup>
-        <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-        <GenerateBindingRedirectsOutputType>true</GenerateBindingRedirectsOutputType>
-    </PropertyGroup>
-
     <ItemGroup>
         <PackageReference Include="Discord.Net" Version="3.15.3" />
         <PackageReference Include="DotNetEnv" Version="3.1.1" />
@@ -23,6 +18,7 @@
         <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" Version="8.0.0" />
         <PackageReference Include="Moq" Version="4.20.71" />
+        <PackageReference Include="OneOf" Version="3.0.271" />
         <PackageReference Include="Refit" Version="7.1.2" />
         <PackageReference Include="Refit.HttpClientFactory" Version="7.1.2" />
     </ItemGroup>
