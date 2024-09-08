@@ -1,13 +1,10 @@
-using PubgReportCrawler.Models;
-
-namespace PubgReportCrawlerTests;
-
 using Microsoft.Extensions.Logging;
-
 using Moq;
-
 using PubgReportCrawler.Dtos;
+using PubgReportCrawler.Models;
 using PubgReportCrawler.Services;
+
+namespace PubgReportCrawlerTests.Services;
 
 public class StreamInfoServiceTests
 {
@@ -48,7 +45,7 @@ public class StreamInfoServiceTests
     [Test]
     public async Task GetStreamInfoWhenApiReturnsStreamsShouldTriggerAction()
     {
-        GetStreamsResponse response = new() { [Guid.NewGuid()] = [new StreamResponse(DateTime.UtcNow, "duo-fpp", "Kiki_Main", 0, "Foo", "Bar")] };
+        GetStreamsResponse response = new() { [Guid.NewGuid()] = [new StreamResponse(DateTime.UtcNow, "duo-fpp", "Kiki_Main", "Foo", "Bar")] };
 
         _pubgReportApiMock.Setup(api => api.GetStreams(_accountId)).ReturnsAsync(response);
 
@@ -67,7 +64,7 @@ public class StreamInfoServiceTests
     [Test]
     public async Task GetStreamInfoWhenApiReturnsStreamsShouldTriggerActionWithCorrectStreamInfo()
     {
-        StreamResponse streamResponse = new(DateTime.UtcNow, "duo-fpp", "Kiki_Main", 0, "Foo", "Bar");
+        StreamResponse streamResponse = new(DateTime.UtcNow, "duo-fpp", "Kiki_Main", "Foo", "Bar");
         GetStreamsResponse response = new() { [Guid.NewGuid()] = [streamResponse] };
 
         _pubgReportApiMock.Setup(api => api.GetStreams(_accountId)).ReturnsAsync(response);
@@ -87,7 +84,7 @@ public class StreamInfoServiceTests
     [Test]
     public async Task GetStreamInfoDoesNotTriggerActionWhenNoNewStreamInfoIsAvailable()
     {
-        StreamResponse streamResponse = new(DateTime.UtcNow, "duo-fpp", "Kiki_Main", 0, "Foo", "Bar");
+        StreamResponse streamResponse = new(DateTime.UtcNow, "duo-fpp", "Kiki_Main", "Foo", "Bar");
         GetStreamsResponse response = new() { [Guid.NewGuid()] = [streamResponse] };
 
         _pubgReportApiMock.Setup(api => api.GetStreams(_accountId)).ReturnsAsync(response);

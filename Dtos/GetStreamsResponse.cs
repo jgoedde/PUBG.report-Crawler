@@ -6,10 +6,9 @@ namespace PubgReportCrawler.Dtos;
 /// <param name="TimeEvent">When a streamer interaction occurred.</param>
 /// <param name="Mode">The code of the game mode of the match. I.e. duo-fpp</param>
 /// <param name="Map">The code of the map. I.e. Kiki_Main</param>
-/// <param name="TwitchID">The streamer's twitch channel ID.</param>
 /// <param name="Killer">The killer's PUBG nickname of the interaction.</param>
 /// <param name="Victim">The victim's PUBG nickname of the interaction.</param>
-public sealed record StreamResponse(DateTime TimeEvent, string Mode, string Map, int TwitchID, string Killer, string Victim);
+public sealed record StreamResponse(DateTime TimeEvent, string Mode, string Map, string Killer, string Victim);
 
 /// <summary>
 /// Represents a dictionary of recent streamer interactions.

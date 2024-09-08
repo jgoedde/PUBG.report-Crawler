@@ -11,9 +11,9 @@ namespace PubgReportCrawler.Services;
 public sealed class StreamInfoService(IPubgReportApi pubgReportApi, ILogger<StreamInfoService> logger)
 {
     /// <summary>
-    /// Stores the last streamer interaction time for each PubgReportAccountId.
+    /// Stores the last streamer interaction time.
     /// </summary>
-    private readonly Dictionary<PubgReportAccountId, ShowdownTimeUtc> _lastStreamTimes = [];
+    private ShowdownTimeUtc? _lastStreamTime;
 
     /// <summary>
     /// Retrieves stream information for a given account ID and triggers an action whenever new stream info is available.
@@ -37,10 +37,8 @@ public sealed class StreamInfoService(IPubgReportApi pubgReportApi, ILogger<Stre
             .OrderByDescending(si => si.ShowdownTimeUtc.Value)
             .ToList();
 
-        var lastStreamTimeUtc = _lastStreamTimes.GetValueOrDefault(accountId, new ShowdownTimeUtc(DateTime.MinValue));
-
         var newStreamInfos = validStreamInfos
-            .Where(si => si.ShowdownTimeUtc.Value > lastStreamTimeUtc.Value)
+            .Where(showdown => showdown.ShowdownTimeUtc.Value > (_lastStreamTime ?? new ShowdownTimeUtc(DateTime.MinValue)).Value)
             .ToList();
 
         if (newStreamInfos.Count == 0)
@@ -48,7 +46,7 @@ public sealed class StreamInfoService(IPubgReportApi pubgReportApi, ILogger<Stre
             return;
         }
 
-        _lastStreamTimes[accountId] = newStreamInfos.First().ShowdownTimeUtc;
+        _lastStreamTime = newStreamInfos.First().ShowdownTimeUtc;
         onNewStreamInfo(newStreamInfos);
     }
 

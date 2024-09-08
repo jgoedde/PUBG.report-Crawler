@@ -12,7 +12,7 @@ public sealed class MapTest
     {
         const string code = "unknown-map";
 
-        OneOf<Map,UnknownMap> createMapResult = Map.MapFactory.CreateWithReadableName(code);
+        OneOf<Map, UnknownMap> createMapResult = Map.MapFactory.CreateWithReadableName(code);
 
         Assert.Multiple(() =>
         {
@@ -20,14 +20,14 @@ public sealed class MapTest
             Assert.That(createMapResult.AsT1.CodeName, Is.EqualTo(code));
         });
     }
-    
+
     [Test]
     public void CreateWithReadableName_Returns_NewMap()
     {
         const string code = "Kiki_Main";
         const string name = "Deston";
 
-        OneOf<Map,UnknownMap> createMapResult = Map.MapFactory.CreateWithReadableName(code);
+        OneOf<Map, UnknownMap> createMapResult = Map.MapFactory.CreateWithReadableName(code);
 
         Assert.Multiple(() =>
         {
@@ -35,14 +35,14 @@ public sealed class MapTest
             Assert.That(createMapResult.AsT0.Name, Is.EqualTo(name));
         });
     }
-    
+
     [Test]
     public void ToString_Returns_ReadableName()
     {
         const string code = "Kiki_Main";
         const string name = "Deston";
 
-        OneOf<Map,UnknownMap> createMapResult = Map.MapFactory.CreateWithReadableName(code);
+        OneOf<Map, UnknownMap> createMapResult = Map.MapFactory.CreateWithReadableName(code);
 
         Assert.Multiple(() =>
         {
