@@ -44,7 +44,7 @@ public sealed class PubgReportHostedService(
 
         // We do not want to spam the user with each showdown report per message.
         // This is happening when the app is restarted and so the cache containing the past streamer showdowns is cleared.
-        if (infos.Count >= 3)
+        if (infos.Count > 3)
         {
             await socketUser.SendMessageAsync(showdownReportProvider.GetManyMoreShowdownsMessage());
             return;
