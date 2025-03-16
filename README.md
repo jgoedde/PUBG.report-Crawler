@@ -10,10 +10,9 @@ Fetches the pubg.report API for new streams of one specific player ID and stores
 
 This app is containerized using Docker.
 
-ℹ️ Make sure Docker is installed.
 ℹ️ Make sure git is installed.
 
-### Setup by cloning with git:
+### Using docker:
 
 ```
 git clone https://github.com/jgoedde/PUBG.report-Crawler.git \
