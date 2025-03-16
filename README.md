@@ -1,19 +1,19 @@
 # PUBG.report-Crawler
 
-Stateful Console App notifying users on new entries on https://pubg.report
+A script notifying users on new entries on https://pubg.report via discord private message.
 
 Fetches the pubg.report API for new streams of one specific player ID and stores the latest match time within the lifetime of the application, without a database. Every 30 Minutes new matches are being checked for.
 
 ![image](https://github.com/jgoedde/PUBG.report-Crawler/assets/129423545/e28b12e9-ed9c-4e0c-8837-1a5b8596d835)
 
-# How to run
+## How to run
 
 This app is containerized using Docker.
 
 ℹ️ Make sure Docker is installed.
 ℹ️ Make sure git is installed.
 
-## Setup by cloning with git:
+### Setup by cloning with git:
 
 ```
 git clone https://github.com/jgoedde/PUBG.report-Crawler.git \
