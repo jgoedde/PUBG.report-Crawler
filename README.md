@@ -1,5 +1,8 @@
 # PUBG.report-Crawler
 
+[![C#](https://custom-icon-badges.demolab.com/badge/C%23-%23239120.svg?logo=cshrp&logoColor=white)](#)
+[![.NET](https://img.shields.io/badge/.NET-512BD4?logo=dotnet&logoColor=fff)](#)
+
 A script notifying users on new entries on https://pubg.report via discord private message.
 
 Fetches the pubg.report API for new streams of one specific player ID and stores the latest match time within the lifetime of the application, without a database. Every 30 Minutes new matches are being checked for.
