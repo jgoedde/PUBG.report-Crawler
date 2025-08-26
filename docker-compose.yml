@@ -7,6 +7,11 @@ services:
       dockerfile: Dockerfile
       args:
         BUILD_CONFIGURATION: ${BUILD_CONFIGURATION:-Release}
+    environment:
+      DISCORD_BOT_TOKEN: ${DISCORD_BOT_TOKEN}
+      DISCORD_USER_ID: ${DISCORD_USER_ID}
+      KRAFTON_ACCOUNT_ID: ${KRAFTON_ACCOUNT_ID}
+      PUBG_NICK: ${PUBG_NICK}
     volumes:
       - ./logs:/app/logs # Example of how to map a local directory to the container
     entrypoint: ["dotnet", "PubgReportCrawler.dll"]
